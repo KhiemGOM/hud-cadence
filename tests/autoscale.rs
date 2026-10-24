@@ -11,7 +11,7 @@ use hud_cadence::autoscale::{detect, geometry, parse_probe, resample, Band};
 use hud_cadence::font::{render, Font};
 
 fn font() -> Font {
-    Font::load(include_bytes!("../assets/ascii.png")).unwrap()
+    Font::locate().unwrap()
 }
 
 /// Exact-area downscale (each output pixel is the mean of the source area it covers).

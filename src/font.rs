@@ -52,6 +52,24 @@ impl Font {
     }
 }
 
+impl Font {
+    /// Reads the sheet from `path`. The file is Mojang's and is not shipped with this tool.
+    pub fn from_file(path: &std::path::Path) -> Result<Font, String> {
+        let how = "get it from your Minecraft client jar (a .jar is a zip: assets/minecraft/textures/font/ascii.png) and pass its path in HUD_CADENCE_FONT, or put it at ./ascii.png";
+        let bytes = std::fs::read(path).map_err(|e| format!("cannot read the font sheet {} ({e}); {how}", path.display()))?;
+        Font::load(&bytes).map_err(|e| format!("{} is not a usable font sheet: {e}; {how}", path.display()))
+    }
+
+    /// The font from `HUD_CADENCE_FONT`, else `ascii.png` or `assets/ascii.png` in the current directory.
+    pub fn locate() -> Result<Font, String> {
+        if let Some(p) = std::env::var_os("HUD_CADENCE_FONT") {
+            return Font::from_file(std::path::Path::new(&p));
+        }
+        let local = ["ascii.png", "assets/ascii.png"].into_iter().map(std::path::Path::new).find(|p| p.exists());
+        Font::from_file(local.unwrap_or(std::path::Path::new("ascii.png")))
+    }
+}
+
 /// Glyph for `ch` (code points below 256). `width` is the advance before the gap column.
 pub fn glyph(font: &Font, ch: char) -> Glyph {
     let code = ch as usize;

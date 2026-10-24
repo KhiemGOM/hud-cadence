@@ -2,6 +2,9 @@
 name = "hud-cadence"
 version = "0.0.0"
 edition = "2021"
+license = "MIT"
+repository = "https://github.com/KhiemGOM/hud-cadence"
+readme = "README.md"
 description = "Reads a once-per-second HUD counter (the F3 FPS value) from video frames and checks that its update moments keep a constant phase modulo one second"
 
 [dependencies]

@@ -438,7 +438,10 @@ fn autodetect(a: &mut Args, font: &Font) {
 
 fn main() {
     let mut a = args();
-    let font = Font::load(include_bytes!("../assets/ascii.png")).unwrap();
+    let font = Font::locate().unwrap_or_else(|e| {
+        eprintln!("hud-cadence: {e}");
+        std::process::exit(2)
+    });
     if a.cmd == "find" {
         portion(&a); // a bad --from/--to is refused before any video is touched
         if !a.explicit {

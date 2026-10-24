@@ -15,9 +15,7 @@ that removes anything other than a whole number of seconds shifts that phase per
 reads the number on every frame, finds the change frames, and reports every phase jump, ranked by how much
 the value changed at that boundary, so each one can be checked by other means.
 
-What it is validated against (see [REPORT.md](REPORT.md)): a control recording with a frame-ID strip and a
-per-frame game log (reader exact on 96 of 98 changes, 0 off by one; game grid 572 ms ± 1), and a 3.4 s splice
-found as exactly −24 frames. Known blind spot: a cut of a whole number of seconds (±2 frames) is reported as
+Known blind spot: a cut of a whole number of seconds (±2 frames) is reported as
 drift or not at all. A capped, steady FPS gives nothing to measure.
 
 ## Install
@@ -26,12 +24,16 @@ Needs Rust (stable) and an `ffmpeg` executable. For AV1 recordings use a build w
 "full" build on Windows), it is about twice as fast as libaom.
 
 ```
-git clone <this repo> hud-cadence
+git clone https://github.com/KhiemGOM/hud-cadence
 cd hud-cadence
 cargo build --release
 ```
 
 The binary is `target/release/hud-cadence` (`.exe` on Windows).
+
+The tool also needs the Minecraft font sheet, which is Mojang's and is not in this repository: extract
+`assets/minecraft/textures/font/ascii.png` from your client jar (it is a zip) and either put it next to where you run
+the tool as `ascii.png` or point `HUD_CADENCE_FONT` at it.
 
 ## Use
 
@@ -127,7 +129,7 @@ Speed: about 700–1,000 frames/s on a 1440p60 AV1 file with dav1d (decode-bound
 
 ## What it reads
 
-The vanilla Minecraft font (`assets/ascii.png` from the game jar) at an integer size of 3 video pixels per font
+The vanilla Minecraft font (`assets/minecraft/textures/font/ascii.png` from your game jar, not included here: it is Mojang's; unzip it from `~/.minecraft/versions/<version>/<version>.jar`, then put it at `./ascii.png` or set `HUD_CADENCE_FONT`; the tests need it too) at an integer size of 3 video pixels per font
 pixel: footage with other font pixel sizes is resampled by `3 / size` first (automatic, or `--prescale`). It looks
 for the text `FPS: ` and reads up to four digits after it, on the top-left 1500×40 px of each frame; the label
 must be at least 80 % lit (resampled footage is soft, 97 % read nothing). It copes with a dimmed overlay (inventory/pause tint) and with the label being covered while
@@ -148,4 +150,4 @@ hud-cadence labels scan.json --log <run/hudinfo/session.jsonl> --out <dir> [--so
 phase histogram and, with `--strip`, decodes the frame-ID sync strip drawn by the companion control mod
 (`mod-hud`, a Fabric 1.21.11 mod that draws the same overlay plus a strip and logs every rendered frame).
 `truth` compares detected changes with that log; `labels` writes per-frame label files and frame-exact cuts of
-the usable segments. `results/` holds the control and splice runs the report is based on.
+the usable segments.
