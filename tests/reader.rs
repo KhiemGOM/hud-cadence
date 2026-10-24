@@ -7,7 +7,7 @@ use hud_cadence::font::{glyph, render, Font};
 use hud_cadence::reader::{read_strip, Reading};
 
 fn font() -> Font {
-    Font::load(include_bytes!("../assets/ascii.png")).unwrap()
+    Font::locate().unwrap()
 }
 
 #[test]

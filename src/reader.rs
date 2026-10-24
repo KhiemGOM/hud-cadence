@@ -6,7 +6,7 @@ pub const ANCHOR_TEXT: &str = "FPS: ";
 
 /// Share of the label's pixels that must be lit for the anchor to match. Footage stored at another size than it was drawn
 /// (a 1440p game in a 1080p file, resampled back) comes out soft, with 90 to 95 % of the strokes still above the
-/// threshold; the old 97 % read nothing there. Native footage is unaffected (identical readings, REPORT.md).
+/// threshold; the old 97 % read nothing there. Native footage is unaffected.
 pub const COVERAGE_PCT: usize = 80;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -272,7 +272,7 @@ mod tests {
 
     #[test]
     fn the_prefiltered_anchor_search_equals_brute_force_on_every_input() {
-        let font = Font::load(include_bytes!("../assets/ascii.png")).unwrap();
+        let font = Font::locate().unwrap();
         let mut rng = Rng(0x9e3779b97f4a7c15);
         for scale in [2usize, 3] {
             let t = Templates::new(&font, scale);
